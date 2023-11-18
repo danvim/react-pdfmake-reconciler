@@ -9,11 +9,8 @@ import {
 import "./App.css";
 import { PdfPreview } from "../PdfPreview.tsx";
 import { PdfNode } from "../types/PdfNode.ts";
-import { PdfTable } from "../components/PdfTable.tsx";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import { PdfTable } from "../components";
 import { Heading } from "./components/Heading.tsx";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Bold: FC<{ children?: PdfNode }> = ({ children }) => {
   return <pdf-text bold={true}>{children}</pdf-text>;
