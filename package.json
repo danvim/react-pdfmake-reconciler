@@ -1,0 +1,48 @@
+{
+  "name": "react-pdfmake",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/react-pdfmake.umd.cjs",
+  "module": "./dist/react-pdfmake.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-pdfmake.js",
+      "require": "./dist/react-pdfmake.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "pdfmake": "^0.2.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-reconciler": "^0.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.1",
+    "@types/pdfkit": "^0.13.2",
+    "@types/pdfmake": "^0.2.8",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/react-reconciler": "^0.28.8",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "prettier": "^3.1.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.3"
+  },
+  "files": [
+    "dist"
+  ]
+}
