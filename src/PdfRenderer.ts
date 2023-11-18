@@ -29,7 +29,7 @@ export const PdfRenderer = {
     ReactReconcilerInst.injectIntoDevTools({
       bundleType: 1,
       version: "1",
-      rendererPackageName: "react-pdfmake",
+      rendererPackageName: "react-pdfmake-reconciler",
       findFiberByHostInstance: (instance) => root.getInstanceFromNode(instance),
     });
 

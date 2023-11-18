@@ -1,4 +1,4 @@
-# React PDF Make
+# React PDF Make Reconciler
 
 This project explores making PDFs using PDF Make and React.
 
@@ -25,9 +25,9 @@ pnpm dev
 See `/demo` for a more extensive example.
 
 ```tsx
-/// <reference types="react-pdfmake/reactExtension" />
+/// <reference types="react-pdfmake-reconciler/reactExtension" />
 
-import { PdfRenderer } from 'react-pdfmake/PdfRenderer'
+import { PdfRenderer } from 'react-pdfmake-reconciler/PdfRenderer'
 
 const {unmount} = PdfRenderer.render(
   <pdf-text bold>Hello World!</pdf-text>,
