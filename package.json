@@ -16,7 +16,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:docs": "vite build --config vite-docs.config.ts"
   },
   "dependencies": {
     "pdfmake": "^0.2.8",
