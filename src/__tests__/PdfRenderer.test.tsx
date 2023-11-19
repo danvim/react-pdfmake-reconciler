@@ -275,5 +275,11 @@ describe("PdfRenderer", () => {
         },
       ]);
     });
+
+    test("array", () => {
+      expect(
+        PdfRenderer.renderOnce([<pdf-array key={1}>Hello World!</pdf-array>]),
+      ).resolves.toEqual([["Hello World!"]]);
+    });
   });
 });

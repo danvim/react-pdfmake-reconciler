@@ -25,19 +25,29 @@ import { PdfElement, PdfNode } from "./PdfNode.ts";
 
 import { PdfPrefixed } from "../pdfPrefix.ts";
 import { TextInstance } from "../hostConfig.ts";
+import { Attributes } from "react";
+
+interface PdfElementAttributes extends Attributes {
+  children?: PdfNode;
+}
+
+export interface PdfSingleChildElementProps extends PdfElementAttributes {
+  children: PdfElement;
+}
 
 export interface PdfElementsSansPrefix {
-  text: { children?: PdfNode } & (
-    | Omit<ContentText, "text">
-    | Omit<ContentLink, "text">
-    | Omit<ContentAnchor, "text">
-    | Omit<ContentTocItem, "text">
-  );
-  columns: { children?: PdfNode } & Omit<ContentColumns, "columns">;
-  stack: { children?: PdfNode } & Omit<ContentStack, "stack">;
-  ol: { children?: PdfNode } & Omit<ContentOrderedList, "ol">;
-  ul: { children?: PdfNode } & Omit<ContentUnorderedList, "ul">;
-  table: { children?: PdfNode } & Omit<ContentTable, "table">;
+  text: PdfElementAttributes &
+    (
+      | Omit<ContentText, "text">
+      | Omit<ContentLink, "text">
+      | Omit<ContentAnchor, "text">
+      | Omit<ContentTocItem, "text">
+    );
+  columns: PdfElementAttributes & Omit<ContentColumns, "columns">;
+  stack: PdfElementAttributes & Omit<ContentStack, "stack">;
+  ol: PdfElementAttributes & Omit<ContentOrderedList, "ol">;
+  ul: PdfElementAttributes & Omit<ContentUnorderedList, "ul">;
+  table: PdfElementAttributes & Omit<ContentTable, "table">;
   pageReference: { children: string } & Omit<
     ContentPageReference,
     "pageReference"
@@ -51,32 +61,27 @@ export interface PdfElementsSansPrefix {
   qr: ContentQr;
   canvas: ContentCanvas;
 }
-
-export interface PdfElementWrapperProps {
-  children: PdfElement;
-}
-
 export interface PdfCellProps
   extends TableCellProperties,
-    PdfElementWrapperProps {}
+    PdfSingleChildElementProps {}
 
 export interface PdfColumnProps
   extends ColumnProperties,
-    PdfElementWrapperProps {}
+    PdfSingleChildElementProps {}
 
 export type PdfListItemProps = (
   | OrderedListElementProperties
   | UnorderedListElementProperties
 ) &
-  PdfElementWrapperProps;
+  PdfSingleChildElementProps;
 
 export interface VirtualPdfElementsSansPrefix extends PdfElementsSansPrefix {
-  array: { children?: PdfNode };
+  array: PdfElementAttributes;
   cell: PdfCellProps;
   column: PdfColumnProps;
   li: PdfListItemProps;
-  tbody: { children?: PdfNode } & Omit<Table, "body">;
-  toc: { children?: PdfNode } & Omit<TableOfContent, "title">;
+  tbody: PdfElementAttributes & Omit<Table, "body">;
+  toc: PdfElementAttributes & Omit<TableOfContent, "title">;
 }
 
 export type PdfElements = {
@@ -94,7 +99,6 @@ export type PdfReconcilerIntrinsicType = PdfPrefixed<VirtualPdfPrimitiveType>;
 
 export interface PdfReconcilerElement {
   $__reactPdfMakeType: PdfReconcilerIntrinsicType;
-
   [K: string]: unknown;
 }
 

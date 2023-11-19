@@ -1,4 +1,4 @@
-import { ComponentProps, FC, ReactElement } from "react";
+import { ComponentProps, FC, Fragment, ReactElement } from "react";
 
 export const PdfTable: FC<
   { rows: ReactElement[][] } & Omit<ComponentProps<"pdf-table">, "children"> &
@@ -7,8 +7,12 @@ export const PdfTable: FC<
   return (
     <pdf-table layout={layout}>
       <pdf-tbody {...tbodyProps}>
-        {rows.map((row) => (
-          <pdf-array>{row}</pdf-array>
+        {rows.map((row, i) => (
+          <pdf-array key={i}>
+            {row.map((cell, j) => (
+              <Fragment key={j}>{cell}</Fragment>
+            ))}
+          </pdf-array>
         ))}
       </pdf-tbody>
     </pdf-table>

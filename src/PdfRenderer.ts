@@ -31,7 +31,6 @@ export const PdfRenderer = {
       bundleType: 1,
       version: "1",
       rendererPackageName: "react-pdfmake-reconciler",
-      findFiberByHostInstance: (instance) => root.getInstanceFromNode(instance),
     });
 
     const unmount = () => {
