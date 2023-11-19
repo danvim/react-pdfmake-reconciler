@@ -48,7 +48,7 @@ const usePdfObjectLink = (content: Content): string | null => {
     });
 
     blobPromise.then((blob) => {
-      console.log("New PDF rendered");
+      // console.log("New PDF rendered");
       setLink(URL.createObjectURL(blob));
     });
   }, [content]);
@@ -60,7 +60,7 @@ const useRenderContent = (pdfElement: PdfNode): Content => {
   const [content, setContent] = useState<Content>([]);
 
   useEffect(() => {
-    console.log("Pdf has changed");
+    // console.log("Pdf has changed");
     const { unmount } = PdfRenderer.render(pdfElement, setContent);
 
     return () => {

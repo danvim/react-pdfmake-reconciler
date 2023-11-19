@@ -11,7 +11,8 @@
     "build": "tsc && vite build",
     "build:docs": "vite build --config vite-docs.config.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "pdfmake": "^0.2.8",
@@ -35,7 +36,8 @@
     "prettier": "^3.1.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.6.3"
+    "vite-plugin-dts": "^3.6.3",
+    "vitest": "^0.34.6"
   },
   "files": [
     "dist"

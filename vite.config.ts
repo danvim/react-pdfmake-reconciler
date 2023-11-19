@@ -26,7 +26,7 @@ export default defineConfig({
     react(),
     dts({
       copyDtsFiles: true,
-      exclude: "./src/vite-env.d.ts",
+      exclude: ["./src/vite-env.d.ts", "**/*.test.{ts,tsx}", "./src/demo/**/*"],
     }),
   ],
 });

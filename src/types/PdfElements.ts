@@ -1,4 +1,5 @@
 import {
+  ColumnProperties,
   ContentAnchor,
   ContentCanvas,
   ContentColumns,
@@ -14,9 +15,11 @@ import {
   ContentTextReference,
   ContentTocItem,
   ContentUnorderedList,
+  OrderedListElementProperties,
   Table,
   TableCellProperties,
   TableOfContent,
+  UnorderedListElementProperties,
 } from "pdfmake/interfaces";
 import { PdfElement, PdfNode } from "./PdfNode.ts";
 
@@ -27,11 +30,13 @@ export interface PdfElementsSansPrefix {
   text: { children?: PdfNode } & (
     | Omit<ContentText, "text">
     | Omit<ContentLink, "text">
+    | Omit<ContentAnchor, "text">
+    | Omit<ContentTocItem, "text">
   );
   columns: { children?: PdfNode } & Omit<ContentColumns, "columns">;
   stack: { children?: PdfNode } & Omit<ContentStack, "stack">;
-  ol: { children?: PdfNode } & Omit<ContentUnorderedList, "ol">;
-  ul: { children?: PdfNode } & Omit<ContentOrderedList, "ul">;
+  ol: { children?: PdfNode } & Omit<ContentOrderedList, "ol">;
+  ul: { children?: PdfNode } & Omit<ContentUnorderedList, "ul">;
   table: { children?: PdfNode } & Omit<ContentTable, "table">;
   pageReference: { children: string } & Omit<
     ContentPageReference,
@@ -47,17 +52,31 @@ export interface PdfElementsSansPrefix {
   canvas: ContentCanvas;
 }
 
-export interface PdfCellProps extends TableCellProperties {
+export interface PdfElementWrapperProps {
   children: PdfElement;
 }
+
+export interface PdfCellProps
+  extends TableCellProperties,
+    PdfElementWrapperProps {}
+
+export interface PdfColumnProps
+  extends ColumnProperties,
+    PdfElementWrapperProps {}
+
+export type PdfListItemProps = (
+  | OrderedListElementProperties
+  | UnorderedListElementProperties
+) &
+  PdfElementWrapperProps;
 
 export interface VirtualPdfElementsSansPrefix extends PdfElementsSansPrefix {
   array: { children?: PdfNode };
   cell: PdfCellProps;
+  column: PdfColumnProps;
+  li: PdfListItemProps;
   tbody: { children?: PdfNode } & Omit<Table, "body">;
-  anchor: { children?: PdfNode } & Omit<ContentAnchor, "text">;
   toc: { children?: PdfNode } & Omit<TableOfContent, "title">;
-  tocItem: { children?: PdfNode } & Omit<ContentTocItem, "text">;
 }
 
 export type PdfElements = {

@@ -2,8 +2,6 @@ import { HostConfig } from "react-reconciler";
 import { Content } from "pdfmake/interfaces";
 import { DefaultEventPriority } from "react-reconciler/constants";
 import {
-  PdfCellProps,
-  PdfPrimitiveType,
   PdfReconcilerElement,
   PdfReconcilerIntrinsicType,
   PdfReconcilerNode,
@@ -38,22 +36,10 @@ export const hostConfig: HostConfig<
   supportsPersistence: true,
   supportsHydration: false,
   createInstance: (type, props) => {
-    console.log("createInstance");
-    console.log("Type", type);
+    // console.log("createInstance");
+    // console.log("Type", type);
 
     if (type === "pdf-array") return [];
-
-    if (type === "pdf-cell") {
-      // Cell doesn't constitute an element, but carries extra props to element below
-      const { children, ...tableCellProps } = props as unknown as PdfCellProps;
-
-      console.log("Cell", children);
-
-      return {
-        $__reactPdfMakeType: children.type as PdfReconcilerIntrinsicType,
-        ...tableCellProps,
-      } satisfies PdfReconcilerElement;
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { children: _, ...restProps } = props;
@@ -64,7 +50,7 @@ export const hostConfig: HostConfig<
     };
   },
   createTextInstance: (text) => {
-    console.log("create text instance", text);
+    // console.log("create text instance", text);
     return text;
   },
   appendInitialChild: (parent, child) => {
@@ -94,14 +80,13 @@ export const hostConfig: HostConfig<
   getInstanceFromNode: () => null,
   // Persistence mode
   cloneInstance: (
-    instance,
-    updatePayload,
+    _instance,
+    _updatePayload,
     type,
-    oldProps,
+    _oldProps,
     newProps,
     _,
     keepChildren,
-    recyclableInstance,
   ) => {
     const { children, ...restNewProps } = newProps;
 
@@ -117,29 +102,16 @@ export const hostConfig: HostConfig<
       ...restNewProps,
     };
 
-    console.log("Clone instance", {
-      newInstance,
-      instance,
-      updatePayload,
-      type,
-      oldProps,
-      newProps,
-      keepChildren,
-      recyclableInstance,
-    });
-
     return newInstance;
   },
-  createContainerChildSet: (container) => {
-    console.log("Container", container);
-
+  createContainerChildSet: () => {
     return [];
   },
   appendChildToContainerChildSet: (childSet, child) => {
     childSet.push(child);
   },
   finalizeContainerChildren: (container, newChildren) => {
-    console.log("finalizeContainerChildren", container, newChildren);
+    // console.log("finalizeContainerChildren", container, newChildren);
     container[container.$__reactPdfMakeType] = newChildren;
     container.onUpdate(newChildren as Content);
   },
@@ -168,65 +140,63 @@ const removePdfTypePrefix = <K extends VirtualPdfPrimitiveType>(
 
 const pdfAppendChild = (
   parent: PdfReconcilerNode,
-  child: PdfReconcilerNode,
+  _child: PdfReconcilerNode,
 ): void => {
-  console.log("append child", parent, child);
+  // console.log("append child", parent, child);
+  const child = getRealChild(_child);
 
   // TextInstance
   if (typeof parent !== "object") {
     throw new Error("Cannot append to text instance");
   }
 
-  // Inline
+  // Array
   if (Array.isArray(parent)) {
     parent.push(child);
     return;
   }
 
-  const contentKey = getContentKey(parent.$__reactPdfMakeType);
+  const parentType = parent.$__reactPdfMakeType;
+
+  const contentKey = getContentKey(parentType);
 
   if (contentKey === null) {
     return;
   }
 
   // Typical object content
+  const currentChildren = getChildrenFromElement(parent);
 
-  const content = parent[contentKey];
-
-  if (content === undefined) {
+  if (currentChildren === undefined) {
     // First append
-    if (contentKey === "body") {
+    if (
+      contentKey === "body" ||
+      contentKey === "columns" ||
+      contentKey === "stack"
+    ) {
+      // Always exist as array
       parent[contentKey] = [child];
       return;
     }
 
+    // First item does not need to exist as array
     parent[contentKey] = child;
-  } else if (!Array.isArray(content)) {
+  } else if (!Array.isArray(currentChildren)) {
     // create array and append child
-    parent[contentKey] = [content, child];
+    parent[contentKey] = [currentChildren, child];
   } else {
-    console.log("Content already array", content, child);
-
     // reuse array and append child
-    parent[contentKey] = [...content, child];
+    parent[contentKey] = [...currentChildren, child];
   }
 };
 
 const getContentKey = (
   key: PdfReconcilerIntrinsicType,
-): PdfPrimitiveType | "body" | "title" | null => {
+): VirtualPdfPrimitiveType | "body" | "title" => {
   const baseType = removePdfTypePrefix(key);
-
-  if (baseType === "array" || baseType === "cell" || baseType === "root") {
-    return null;
-  }
 
   if (baseType === "tbody") {
     return "body";
-  }
-
-  if (baseType === "anchor" || baseType === "tocItem") {
-    return "text";
   }
 
   if (baseType === "toc") {
@@ -234,4 +204,55 @@ const getContentKey = (
   }
 
   return baseType;
+};
+
+const isPdfReconcilerElement = (
+  node: PdfReconcilerNode,
+): node is PdfReconcilerElement =>
+  typeof node === "object" && node !== null && !Array.isArray(node);
+
+const getChildrenFromElement = (
+  elem: PdfReconcilerElement,
+): PdfReconcilerNode | undefined => {
+  const type = elem.$__reactPdfMakeType;
+
+  const contentKey = getContentKey(type);
+
+  if (contentKey === null) return undefined;
+
+  return elem[contentKey] as PdfReconcilerNode | undefined;
+};
+
+/**
+ * Resolves virtual elements only used to pass extra props
+ */
+const getRealChild = (child: PdfReconcilerNode): PdfReconcilerNode => {
+  if (isPdfReconcilerElement(child)) {
+    const childType = child.$__reactPdfMakeType;
+
+    if (
+      childType === "pdf-cell" ||
+      childType === "pdf-column" ||
+      childType === "pdf-li"
+    ) {
+      const grandChild = getChildrenFromElement(child);
+      if (grandChild === undefined || !isPdfReconcilerElement(grandChild)) {
+        console.log(
+          "This element requires a single PDF element as children. Received: ",
+          grandChild,
+        );
+        return child;
+      }
+
+      const newGrandChild = {
+        ...child,
+        ...grandChild,
+      };
+
+      delete newGrandChild[getContentKey(child.$__reactPdfMakeType)];
+
+      return newGrandChild;
+    }
+  }
+  return child;
 };

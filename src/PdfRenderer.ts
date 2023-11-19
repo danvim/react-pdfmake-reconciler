@@ -3,6 +3,7 @@ import ReactReconciler from "react-reconciler";
 import { hostConfig } from "./hostConfig.ts";
 import { ContentUpdateHandler } from "./types/ContentUpdateHandler.ts";
 import { Container } from "./types/Container.ts";
+import { Content } from "pdfmake/interfaces";
 
 const ReactReconcilerInst = ReactReconciler(hostConfig);
 
@@ -23,7 +24,7 @@ export const PdfRenderer = {
       null,
     );
 
-    console.log("root", root);
+    // console.log("root", root);
 
     ReactReconcilerInst.updateContainer(reactElement, root, null);
     ReactReconcilerInst.injectIntoDevTools({
@@ -34,10 +35,17 @@ export const PdfRenderer = {
     });
 
     const unmount = () => {
-      console.log("Unmounting");
+      // console.log("Unmounting");
       ReactReconcilerInst.updateContainer([], root, null);
     };
 
     return { container, root, unmount };
   },
+  renderOnce: async (renderElement: PdfNode): Promise<Content> =>
+    new Promise((resolve) => {
+      const { unmount } = PdfRenderer.render(renderElement, (content) => {
+        resolve(content);
+        unmount();
+      });
+    }),
 };
