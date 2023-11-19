@@ -1,6 +1,5 @@
 {
   "name": "react-pdfmake-reconciler",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/react-pdfmake-reconciler.cjs",
