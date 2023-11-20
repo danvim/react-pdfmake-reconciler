@@ -1,10 +1,23 @@
 {
   "name": "react-pdfmake-reconciler",
-  "version": "0.0.0",
+  "description": "Writing PDF Make with React JSX using React Reconciler.",
+  "keywords": [
+    "react",
+    "pdfmake",
+    "react-reconciler"
+  ],
+  "version": "0.0.1",
+  "homepage": "https://danvim.github.io/react-pdfmake-reconciler/",
+  "bugs": "https://github.com/danvim/react-pdfmake-reconciler/issues",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/react-pdfmake-reconciler.cjs",
   "module": "./dist/react-pdfmake-reconciler.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danvim/react-pdfmake-reconciler.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -14,15 +27,13 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@types/pdfkit": "^0.13.2",
+    "@types/pdfmake": "^0.2.8",
     "pdfmake": "^0.2.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-reconciler": "^0.29.0"
   },
   "devDependencies": {
     "@types/node": "^20.9.1",
-    "@types/pdfkit": "^0.13.2",
-    "@types/pdfmake": "^0.2.8",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-reconciler": "^0.28.8",
@@ -33,10 +44,15 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "prettier": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vite-plugin-dts": "^3.6.3",
     "vitest": "^0.34.6"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
   },
   "files": [
     "dist"
