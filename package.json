@@ -1,22 +1,39 @@
 {
   "name": "react-pdfmake-reconciler",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MIT",
+  "author": "Daniel Cheung",
   "description": "Writing PDF Make with React JSX using React Reconciler.",
   "keywords": [
     "react",
     "pdfmake",
     "react-reconciler"
   ],
-  "version": "0.0.1",
   "homepage": "https://danvim.github.io/react-pdfmake-reconciler/",
   "bugs": "https://github.com/danvim/react-pdfmake-reconciler/issues",
-  "license": "MIT",
-  "type": "module",
   "main": "./dist/react-pdfmake-reconciler.cjs",
   "module": "./dist/react-pdfmake-reconciler.js",
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/danvim/react-pdfmake-reconciler.git"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-pdfmake-reconciler.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-pdfmake-reconciler.cjs"
+      }
+    },
+    "./react-jsx": {
+      "types": "./dist/react-jsx.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",

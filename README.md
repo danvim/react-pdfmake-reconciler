@@ -25,7 +25,7 @@ pnpm dev
 See `/demo` for a more extensive example.
 
 ```tsx
-/// <reference types="react-pdfmake-reconciler/reactExtension" />
+/// <reference types="react-pdfmake-reconciler/react-jsx" />
 
 import { PdfRenderer } from 'react-pdfmake-reconciler/PdfRenderer'
 
@@ -35,6 +35,7 @@ const {unmount} = PdfRenderer.render(
 )
 
 /*
+Console:
 {
   text: 'Hello World!'
   bold: true
@@ -46,15 +47,7 @@ unmount()
 ```
 
 ```tsx
-import type { Content } from 'pdfmake/interfaces'
+import { PdfRenderer } from 'react-pdfmake-reconciler/PdfRenderer'
 
-const renderContentImmediately = new Promise<Content>(resolve => {
-  const {unmount} = PdfRenderer.render(
-    <pdf-text bold>Hello World!</pdf-text>,
-    content => {
-      resolve(content)
-      unmount()
-    }
-  )
-})
+const content = await PdfRenderer.renderOnce(<pdf-text bold>Hello World!</pdf-text>)
 ```
