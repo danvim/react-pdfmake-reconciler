@@ -51,6 +51,17 @@ function App() {
 
   return (
     <>
+      <h1>React PDF Make Reconciler</h1>
+      <p>
+        <a href="https://www.npmjs.com/package/react-pdfmake-reconciler">
+          NPM Package
+        </a>
+      </p>
+      <p>
+        <a href="https://www.npmjs.com/package/react-pdfmake-reconciler">
+          GitHub repository
+        </a>
+      </p>
       <label>
         Name{" "}
         <input value={name} onChange={(e) => setName(e.currentTarget.value)} />
