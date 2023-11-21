@@ -58,7 +58,7 @@ function App() {
         </a>
       </p>
       <p>
-        <a href="https://www.npmjs.com/package/react-pdfmake-reconciler">
+        <a href="https://github.com/danvim/react-pdfmake-reconciler">
           GitHub repository
         </a>
       </p>
