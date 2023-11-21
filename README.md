@@ -30,9 +30,11 @@ pnpm i
 pnpm dev
 ```
 
-## Using as library
+## Usage
 
-See `/demo` for a more extensive example.
+See `/demo` and tests for more extensive examples.
+
+### Simple examples
 
 ```tsx
 /// <reference types="react-pdfmake-reconciler/react-jsx" />
@@ -47,7 +49,8 @@ const {unmount} = PdfRenderer.render(
 /*
 Console:
 {
-  text: 'Hello World!'
+  $__reactPdfMakeType: 'pdf-text',
+  text: 'Hello World!',
   bold: true
 }
 */
@@ -61,3 +64,24 @@ import { PdfRenderer } from 'react-pdfmake-reconciler/PdfRenderer'
 
 const content = await PdfRenderer.renderOnce(<pdf-text bold>Hello World!</pdf-text>)
 ```
+
+### PDF elements
+
+Newly defined intrinsic elements have the `pdf-` prefix. Roughly, each type of PDF Make node corresponds to one element type, where the property specifying `Content` is mapped to the `children` prop. For example:
+
+```tsx
+const pdfMakeContent = {
+  text: 'GitHub',
+  link: 'https://www.github.com'
+}
+
+// is mapped to
+
+const pdfNode = (
+  <pdf-text link="https://www.github.com">
+    GitHub
+  </pdf-text>
+)
+```
+
+There are also virtual element types. For more information, read JSDocs in types.

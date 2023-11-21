@@ -10,7 +10,7 @@ const ReactReconcilerInst = ReactReconciler(hostConfig);
 export const PdfRenderer = {
   render: (reactElement: PdfNode, onUpdate: ContentUpdateHandler) => {
     const container: Container = {
-      $__reactPdfMakeType: "pdf-root",
+      children: [],
       onUpdate,
     };
     const root = ReactReconcilerInst.createContainer(
@@ -29,7 +29,7 @@ export const PdfRenderer = {
     ReactReconcilerInst.updateContainer(reactElement, root, null);
     ReactReconcilerInst.injectIntoDevTools({
       bundleType: 1,
-      version: "1",
+      version: __APP_VERSION__,
       rendererPackageName: "react-pdfmake-reconciler",
     });
 

@@ -2,6 +2,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import dts from "vite-plugin-dts";
+import { version } from "./package.json";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,4 +30,7 @@ export default defineConfig({
       exclude: ["./src/vite-env.d.ts", "**/*.test.{ts,tsx}", "./src/demo/**/*"],
     }),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(version),
+  },
 });

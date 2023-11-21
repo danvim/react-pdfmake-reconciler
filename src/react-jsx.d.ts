@@ -1,7 +1,7 @@
-import { PdfElements } from "./types/PdfElements.ts";
+import { PdfElements, VirtualPdfElements } from "./types/PdfElements.ts";
 
 declare global {
   namespace JSX {
-    interface IntrinsicElements extends PdfElements {}
+    interface IntrinsicElements extends PdfElements, VirtualPdfElements {}
   }
 }

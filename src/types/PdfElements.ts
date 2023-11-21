@@ -1,3 +1,5 @@
+import { Attributes } from "react";
+import { PdfElement, PdfNode } from "./PdfNode.ts";
 import {
   ColumnProperties,
   ContentAnchor,
@@ -21,86 +23,76 @@ import {
   TableOfContent,
   UnorderedListElementProperties,
 } from "pdfmake/interfaces";
-import { PdfElement, PdfNode } from "./PdfNode.ts";
 
-import { PdfPrefixed } from "../pdfPrefix.ts";
-import { TextInstance } from "../hostConfig.ts";
-import { Attributes } from "react";
+type PdfProps<P> = P & Attributes;
 
-interface PdfElementAttributes extends Attributes {
+type PdfPropsWithChildren<P = object> = PdfProps<P> & {
   children?: PdfNode;
-}
+};
 
-export interface PdfSingleChildElementProps extends PdfElementAttributes {
+type PassThroughPdfProps<P> = PdfProps<P> & {
   children: PdfElement;
-}
+};
 
-export interface PdfElementsSansPrefix {
-  text: PdfElementAttributes &
-    (
-      | Omit<ContentText, "text">
-      | Omit<ContentLink, "text">
-      | Omit<ContentAnchor, "text">
-      | Omit<ContentTocItem, "text">
-    );
-  columns: PdfElementAttributes & Omit<ContentColumns, "columns">;
-  stack: PdfElementAttributes & Omit<ContentStack, "stack">;
-  ol: PdfElementAttributes & Omit<ContentOrderedList, "ol">;
-  ul: PdfElementAttributes & Omit<ContentUnorderedList, "ul">;
-  table: PdfElementAttributes & Omit<ContentTable, "table">;
-  pageReference: { children: string } & Omit<
+export interface PdfElements {
+  "pdf-text": PdfPropsWithChildren<
+    | Omit<ContentText, "text">
+    | Omit<ContentLink, "text">
+    | Omit<ContentAnchor, "text">
+    | Omit<ContentTocItem, "text">
+  >;
+  "pdf-columns": PdfPropsWithChildren<Omit<ContentColumns, "columns">>;
+  "pdf-stack": PdfPropsWithChildren<Omit<ContentStack, "stack">>;
+  "pdf-ol": PdfPropsWithChildren<Omit<ContentOrderedList, "ol">>;
+  "pdf-ul": PdfPropsWithChildren<Omit<ContentUnorderedList, "ul">>;
+  "pdf-table": PdfPropsWithChildren<Omit<ContentTable, "table">>;
+  "pdf-pageReference": { children: string } & Omit<
     ContentPageReference,
     "pageReference"
   >;
-  textReference: { children: string } & Omit<
+  "pdf-textReference": { children: string } & Omit<
     ContentTextReference,
     "textReference"
   >;
-  image: ContentImage;
-  svg: ContentSvg;
-  qr: ContentQr;
-  canvas: ContentCanvas;
-}
-export interface PdfCellProps
-  extends TableCellProperties,
-    PdfSingleChildElementProps {}
-
-export interface PdfColumnProps
-  extends ColumnProperties,
-    PdfSingleChildElementProps {}
-
-export type PdfListItemProps = (
-  | OrderedListElementProperties
-  | UnorderedListElementProperties
-) &
-  PdfSingleChildElementProps;
-
-export interface VirtualPdfElementsSansPrefix extends PdfElementsSansPrefix {
-  array: PdfElementAttributes;
-  cell: PdfCellProps;
-  column: PdfColumnProps;
-  li: PdfListItemProps;
-  tbody: PdfElementAttributes & Omit<Table, "body">;
-  toc: PdfElementAttributes & Omit<TableOfContent, "title">;
+  "pdf-image": ContentImage;
+  "pdf-svg": ContentSvg;
+  "pdf-qr": ContentQr;
+  "pdf-canvas": ContentCanvas;
 }
 
-export type PdfElements = {
-  [K in keyof VirtualPdfElementsSansPrefix as PdfPrefixed<K>]: VirtualPdfElementsSansPrefix[K];
-};
+type RemovePdfPrefix<S> = S extends `pdf-${infer U}` ? U : never;
 
-export type PdfPrimitiveType = keyof PdfElementsSansPrefix;
+type ContentKey = RemovePdfPrefix<keyof PdfElements> | "body" | "title";
 
-export type VirtualPdfPrimitiveType =
-  | PdfPrimitiveType
-  | keyof VirtualPdfElementsSansPrefix
-  | "root";
+export interface VirtualPdfElements {
+  /** Maps content array. */
+  "pdf-array": PdfPropsWithChildren;
+  /** Type-safe way to pass cell-related properties to child element. */
+  "pdf-cell": PassThroughPdfProps<TableCellProperties>;
+  /** Type-safe way to pass column-related properties to child element. */
+  "pdf-column": PassThroughPdfProps<ColumnProperties>;
+  /** Type-safe way to pass list item-related properties to child element. */
+  "pdf-li": PassThroughPdfProps<
+    OrderedListElementProperties | UnorderedListElementProperties
+  >;
+  "pdf-tbody": PdfPropsWithChildren<Omit<Table, "body">>;
+  "pdf-toc": PdfPropsWithChildren<Omit<TableOfContent, "title">>;
+}
 
-export type PdfReconcilerIntrinsicType = PdfPrefixed<VirtualPdfPrimitiveType>;
+export type PdfReconcilerIntrinsicType =
+  | keyof VirtualPdfElements
+  | keyof PdfElements;
+
+export type VirtualContentKey =
+  | RemovePdfPrefix<keyof VirtualPdfElements>
+  | ContentKey;
 
 export interface PdfReconcilerElement {
   $__reactPdfMakeType: PdfReconcilerIntrinsicType;
   [K: string]: unknown;
 }
+
+export type TextInstance = string | number;
 
 export type PdfReconcilerNode =
   | PdfReconcilerElement

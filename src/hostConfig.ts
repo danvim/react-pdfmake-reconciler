@@ -5,17 +5,16 @@ import {
   PdfReconcilerElement,
   PdfReconcilerIntrinsicType,
   PdfReconcilerNode,
-  VirtualPdfPrimitiveType,
+  TextInstance,
+  VirtualContentKey,
 } from "./types/PdfElements.ts";
 import { Container } from "./types/Container.ts";
 import { pdfPrefix, PdfPrefixed } from "./pdfPrefix.ts";
 
-const rootHostContext = {};
-const childHostContext = {};
-
 export interface HostContext {}
 
-export type TextInstance = string | number;
+const rootHostContext: HostContext = {};
+const childHostContext: HostContext = {};
 
 export const hostConfig: HostConfig<
   PdfReconcilerIntrinsicType,
@@ -112,8 +111,10 @@ export const hostConfig: HostConfig<
   },
   finalizeContainerChildren: (container, newChildren) => {
     // console.log("finalizeContainerChildren", container, newChildren);
-    container[container.$__reactPdfMakeType] = newChildren;
-    container.onUpdate(newChildren as Content);
+    const newContainerChildren: PdfReconcilerNode =
+      newChildren.length === 1 ? newChildren[0] : newChildren;
+    container.children = newContainerChildren;
+    container.onUpdate(newContainerChildren as Content);
   },
   replaceContainerChildren: () => {
     /* noop */
@@ -126,7 +127,7 @@ export const hostConfig: HostConfig<
   },
 };
 
-const removePdfTypePrefix = <K extends VirtualPdfPrimitiveType>(
+const removePdfTypePrefix = <K extends VirtualContentKey>(
   pdfReconcilerIntrinsicType: PdfPrefixed<K>,
 ): K => {
   const prefixIndex = pdfReconcilerIntrinsicType.indexOf(pdfPrefix);
@@ -192,7 +193,9 @@ const pdfAppendChild = (
 
 const getContentKey = (
   key: PdfReconcilerIntrinsicType,
-): VirtualPdfPrimitiveType | "body" | "title" => {
+): VirtualContentKey | null => {
+  if (key === "pdf-array") return null;
+
   const baseType = removePdfTypePrefix(key);
 
   if (baseType === "tbody") {
@@ -244,14 +247,22 @@ const getRealChild = (child: PdfReconcilerNode): PdfReconcilerNode => {
         return child;
       }
 
-      const newGrandChild = {
-        ...child,
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        $__reactPdfMakeType: _,
+        ...propagatedProps
+      } = child;
+
+      const childContentKey = getContentKey(child.$__reactPdfMakeType);
+
+      if (childContentKey !== null) {
+        delete propagatedProps[childContentKey];
+      }
+
+      return {
+        ...propagatedProps,
         ...grandChild,
       };
-
-      delete newGrandChild[getContentKey(child.$__reactPdfMakeType)];
-
-      return newGrandChild;
     }
   }
   return child;
