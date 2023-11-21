@@ -1,6 +1,16 @@
 # React PDF Make Reconciler
 
-This project explores making PDFs using PDF Make and React.
+This package lets you create PDFs using PDF Make and React.
+
+[![npm version](https://img.shields.io/npm/v/react-pdfmake-reconciler.svg?logo=npm)](https://www.npmjs.com/package/react-pdfmake-reconciler)
+
+## Installation
+
+This package is available on [NPM](https://www.npmjs.com/package/react-pdfmake-reconciler).
+
+```shell
+npm i react-pdfmake-reconciler
+```
 
 ## Features
 
