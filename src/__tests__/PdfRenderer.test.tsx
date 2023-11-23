@@ -1,16 +1,19 @@
 import { describe, expect, test } from "vitest";
-import { PdfRenderer } from "../PdfRenderer.ts";
+import { PdfRenderer } from "../PdfRenderer.tsx";
+import { FC, useEffect, useState } from "react";
+import { PdfFooter, PdfHeader } from "../components";
+import { DynamicPdfNode } from "../types/DynamicPdfNode.tsx";
 
 describe("PdfRenderer", () => {
   describe("PDF Make Content", () => {
     test("string", () => {
-      expect(PdfRenderer.renderOnce("Hello World!")).resolves.toEqual(
+      expect(PdfRenderer.renderOnce("Hello World!").content).toEqual(
         "Hello World!",
       );
     });
 
     test("number", () => {
-      expect(PdfRenderer.renderOnce(1)).resolves.toEqual("1");
+      expect(PdfRenderer.renderOnce(1).content).toEqual("1");
     });
 
     test("text", () => {
@@ -22,8 +25,8 @@ describe("PdfRenderer", () => {
             <pdf-text id="1">Hello World!</pdf-text>
             <pdf-text tocItem="1">Hello World!</pdf-text>
           </>,
-        ),
-      ).resolves.toEqual([
+        ).content,
+      ).toEqual([
         {
           $__reactPdfMakeType: "pdf-text",
           text: "Hello World!",
@@ -56,8 +59,8 @@ describe("PdfRenderer", () => {
               <pdf-text>Hello World!</pdf-text>
             </pdf-column>
           </pdf-columns>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-columns",
         columns: [
           "Hello World!",
@@ -77,8 +80,8 @@ describe("PdfRenderer", () => {
             Hello World!
             <pdf-text>Hello World!</pdf-text>
           </pdf-stack>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-stack",
         stack: [
           "Hello World!",
@@ -100,8 +103,8 @@ describe("PdfRenderer", () => {
               <pdf-text>Hello World!</pdf-text>
             </pdf-li>
           </pdf-ol>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-ol",
         ol: [
           "Hello World!",
@@ -124,8 +127,8 @@ describe("PdfRenderer", () => {
               <pdf-text>Hello World!</pdf-text>
             </pdf-li>
           </pdf-ul>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-ul",
         ul: [
           "Hello World!",
@@ -152,8 +155,8 @@ describe("PdfRenderer", () => {
               </pdf-array>
             </pdf-tbody>
           </pdf-table>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-table",
         table: {
           $__reactPdfMakeType: "pdf-tbody",
@@ -177,8 +180,8 @@ describe("PdfRenderer", () => {
       expect(
         PdfRenderer.renderOnce(
           <pdf-pageReference>Hello World!</pdf-pageReference>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-pageReference",
         pageReference: "Hello World!",
       });
@@ -188,8 +191,8 @@ describe("PdfRenderer", () => {
       expect(
         PdfRenderer.renderOnce(
           <pdf-textReference>Hello World!</pdf-textReference>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-textReference",
         textReference: "Hello World!",
       });
@@ -201,8 +204,8 @@ describe("PdfRenderer", () => {
           <pdf-toc numberStyle="numberStyle">
             <pdf-text>Title</pdf-text>
           </pdf-toc>,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-toc",
         title: {
           $__reactPdfMakeType: "pdf-text",
@@ -216,8 +219,8 @@ describe("PdfRenderer", () => {
       expect(
         PdfRenderer.renderOnce(
           <pdf-image image="https://example.com/logo.png" />,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-image",
         image: "https://example.com/logo.png",
       });
@@ -225,8 +228,8 @@ describe("PdfRenderer", () => {
 
     test("svg", () => {
       expect(
-        PdfRenderer.renderOnce(<pdf-svg svg="<xml></xml>" />),
-      ).resolves.toEqual({
+        PdfRenderer.renderOnce(<pdf-svg svg="<xml></xml>" />).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-svg",
         svg: "<xml></xml>",
       });
@@ -234,8 +237,8 @@ describe("PdfRenderer", () => {
 
     test("qr", () => {
       expect(
-        PdfRenderer.renderOnce(<pdf-qr qr="Hello World!" />),
-      ).resolves.toEqual({
+        PdfRenderer.renderOnce(<pdf-qr qr="Hello World!" />).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-qr",
         qr: "Hello World!",
       });
@@ -245,8 +248,8 @@ describe("PdfRenderer", () => {
       expect(
         PdfRenderer.renderOnce(
           <pdf-canvas canvas={[{ type: "rect", x: 0, y: 0, w: 10, h: 10 }]} />,
-        ),
-      ).resolves.toEqual({
+        ).content,
+      ).toEqual({
         $__reactPdfMakeType: "pdf-canvas",
         canvas: [{ type: "rect", x: 0, y: 0, w: 10, h: 10 }],
       });
@@ -254,8 +257,86 @@ describe("PdfRenderer", () => {
 
     test("array", () => {
       expect(
-        PdfRenderer.renderOnce(<pdf-array>Hello World!</pdf-array>),
-      ).resolves.toEqual(["Hello World!"]);
+        PdfRenderer.renderOnce(<pdf-array>Hello World!</pdf-array>).content,
+      ).toEqual(["Hello World!"]);
+    });
+  });
+
+  describe("renderOnce", () => {
+    const Test: FC = () => {
+      const [text, setText] = useState("");
+
+      useEffect(() => {
+        setText("Hello");
+      }, []);
+
+      return <>{text}</>;
+    };
+
+    test("flushes effects", () => {
+      expect(PdfRenderer.renderOnce(<Test />).content).toEqual("Hello");
+    });
+  });
+
+  describe("margin content", () => {
+    test("static header content", () => {
+      expect(
+        PdfRenderer.renderOnce(<PdfHeader>Hello</PdfHeader>).header,
+      ).toEqual("Hello");
+    });
+
+    test("static footer content", () => {
+      expect(
+        PdfRenderer.renderOnce(<PdfFooter>Hello</PdfFooter>).footer,
+      ).toEqual("Hello");
+    });
+
+    test("dynamic header content", () => {
+      const document = PdfRenderer.renderOnce(
+        <PdfHeader>
+          {(pageNumber, pageCount, pageSize) => (
+            <pdf-text>
+              {pageNumber}
+              {pageCount}
+              {pageSize.width}
+            </pdf-text>
+          )}
+        </PdfHeader>,
+      );
+      expect(
+        (document.header as DynamicPdfNode)(1, 2, {
+          width: 3,
+          height: 4,
+          orientation: "portrait",
+        }),
+      ).toEqual({
+        $__reactPdfMakeType: "pdf-text",
+        text: ["1", "2", "3"],
+      });
+    });
+
+    test("dynamic footer content", () => {
+      const document = PdfRenderer.renderOnce(
+        <PdfFooter>
+          {(pageNumber, pageCount, pageSize) => (
+            <pdf-text>
+              {pageNumber}
+              {pageCount}
+              {pageSize.width}
+            </pdf-text>
+          )}
+        </PdfFooter>,
+      );
+      expect(
+        (document.footer as DynamicPdfNode)(1, 2, {
+          width: 3,
+          height: 4,
+          orientation: "portrait",
+        }),
+      ).toEqual({
+        $__reactPdfMakeType: "pdf-text",
+        text: ["1", "2", "3"],
+      });
     });
   });
 });

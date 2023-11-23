@@ -63,9 +63,7 @@ export const hostConfig: HostConfig<
   getPublicInstance: (instance) => instance,
   prepareForCommit: () => null,
   resetAfterCommit: () => {},
-  preparePortalMount: () => {
-    console.error("Portal is not supported");
-  },
+  preparePortalMount: () => {},
   scheduleTimeout: globalThis.setTimeout,
   cancelTimeout: globalThis.clearTimeout,
   beforeActiveInstanceBlur: () => {},
@@ -113,8 +111,11 @@ export const hostConfig: HostConfig<
     // console.log("finalizeContainerChildren", container, newChildren);
     const newContainerChildren: PdfReconcilerNode =
       newChildren.length === 1 ? newChildren[0] : newChildren;
-    container.children = newContainerChildren;
-    container.onUpdate(newContainerChildren as Content);
+    container.content = newContainerChildren;
+    container.onUpdate({
+      ...container.otherDocumentDefinitions,
+      content: newContainerChildren as Content,
+    });
   },
   replaceContainerChildren: () => {
     /* noop */

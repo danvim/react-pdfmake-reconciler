@@ -9,7 +9,7 @@ import {
 import "./App.css";
 import { PdfPreview } from "../PdfPreview.tsx";
 import { PdfNode } from "../types/PdfNode.ts";
-import { PdfTable } from "../components";
+import { PdfDocument, PdfFooter, PdfHeader, PdfTable } from "../components";
 import { Heading } from "./components/Heading.tsx";
 
 const Bold: FC<{ children?: PdfNode }> = ({ children }) => {
@@ -71,46 +71,70 @@ function App() {
         {shown && (
           <PdfPreview>
             <StrictMode>
-              <Heading>
-                Report for {name.length === 0 ? "No Name" : name}
-              </Heading>
-              <SourceContext.Provider value={{ url: "https://apple.com" }}>
-                <Counter />
-              </SourceContext.Provider>
-              <pdf-text>
-                Hello <pdf-text link="https://www.google.com">Google</pdf-text>
-              </pdf-text>
-              <pdf-array>Check this out</pdf-array>
-              <pdf-stack>
-                <pdf-text>Hello</pdf-text>
-                <pdf-text>Hello</pdf-text>
-                <pdf-text>Hello</pdf-text>
-              </pdf-stack>
-              <pdf-table layout="lightHorizontalLines">
-                <pdf-tbody headerRows={1}>
-                  <pdf-array>
-                    <pdf-text>Hello</pdf-text>
-                    <pdf-text>Hello</pdf-text>
-                  </pdf-array>
-                  <pdf-array>
-                    <pdf-text>Hello</pdf-text>
-                    <pdf-text>Hi</pdf-text>
-                  </pdf-array>
-                  <pdf-array>
-                    Hello
-                    <pdf-cell border={[true, true, true, true]}>
+              <PdfDocument
+                pageOrientation="landscape"
+                pageMargins={[32, 48, 32, 48]}
+                defaultStyle={{
+                  color: "#0e23a2",
+                }}
+              >
+                <Heading>
+                  Report for {name.length === 0 ? "No Name" : name}
+                </Heading>
+                <SourceContext.Provider value={{ url: "https://apple.com" }}>
+                  <Counter />
+                </SourceContext.Provider>
+                <pdf-text>
+                  Hello{" "}
+                  <pdf-text link="https://www.google.com">Google</pdf-text>
+                </pdf-text>
+                <pdf-array>Check this out</pdf-array>
+                <pdf-stack>
+                  <pdf-text>Hello</pdf-text>
+                  <pdf-text>Hello</pdf-text>
+                  <pdf-text>Hello</pdf-text>
+                </pdf-stack>
+                <pdf-table layout="lightHorizontalLines">
+                  <pdf-tbody headerRows={1}>
+                    <pdf-array>
                       <pdf-text>Hello</pdf-text>
-                    </pdf-cell>
-                  </pdf-array>
-                </pdf-tbody>
-              </pdf-table>
-              <PdfTable
-                layout="noBorders"
-                rows={[
-                  [<pdf-text>Hello</pdf-text>, <pdf-text>Hello</pdf-text>],
-                  [<pdf-text>Hello</pdf-text>, <pdf-text>Hello</pdf-text>],
-                ]}
-              />
+                      <pdf-text>Hello</pdf-text>
+                    </pdf-array>
+                    <pdf-array>
+                      <pdf-text>Hello</pdf-text>
+                      <pdf-text>Hi</pdf-text>
+                    </pdf-array>
+                    <pdf-array>
+                      Hello
+                      <pdf-cell border={[true, true, true, true]}>
+                        <pdf-text>Hello</pdf-text>
+                      </pdf-cell>
+                    </pdf-array>
+                  </pdf-tbody>
+                </pdf-table>
+                <PdfTable
+                  layout="noBorders"
+                  rows={[
+                    [<pdf-text>Hello</pdf-text>, <pdf-text>Hello</pdf-text>],
+                    [<pdf-text>Hello</pdf-text>, <pdf-text>Hello</pdf-text>],
+                  ]}
+                />
+              </PdfDocument>
+              <PdfFooter>
+                {(pageNumber, pageCount) => (
+                  <pdf-columns margin={[32, 0, 32, 0]}>
+                    <>This is a footer </>
+                    <pdf-text alignment="right">
+                      Page {pageNumber} / {pageCount}
+                    </pdf-text>
+                  </pdf-columns>
+                )}
+              </PdfFooter>
+              <PdfHeader>
+                <pdf-text marginLeft={32} marginTop={16}>
+                  This is a header!
+                </pdf-text>
+              </PdfHeader>
             </StrictMode>
           </PdfPreview>
         )}
