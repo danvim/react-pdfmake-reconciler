@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { PdfRenderer } from "../PdfRenderer.tsx";
-import { FC, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { PdfFooter, PdfHeader } from "../components";
 import { DynamicPdfNode } from "../types/DynamicPdfNode.tsx";
 
 describe("PdfRenderer", () => {
-  describe("PDF Make Content", () => {
+  describe("pdfmake Content", () => {
     test("string", () => {
       expect(PdfRenderer.renderOnce("Hello World!").content).toEqual(
         "Hello World!",
@@ -259,6 +259,19 @@ describe("PdfRenderer", () => {
       expect(
         PdfRenderer.renderOnce(<pdf-array>Hello World!</pdf-array>).content,
       ).toEqual(["Hello World!"]);
+    });
+
+    test("fragment", () => {
+      expect(
+        PdfRenderer.renderOnce(
+          <pdf-stack>
+            {["Hello", <Fragment key={1}>World!</Fragment>]}
+          </pdf-stack>,
+        ).content,
+      ).toEqual({
+        $__reactPdfMakeType: "pdf-stack",
+        stack: ["Hello", "World!"],
+      });
     });
   });
 

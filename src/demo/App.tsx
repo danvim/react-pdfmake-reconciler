@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-      <h1>React PDF Make Reconciler</h1>
+      <h1>React pdfmake Reconciler</h1>
       <p>
         <a href="https://www.npmjs.com/package/react-pdfmake-reconciler">
           NPM Package

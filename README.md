@@ -1,6 +1,6 @@
-# React PDF Make Reconciler
+# React pdfmake Reconciler
 
-This package lets you create PDFs using PDF Make and React.
+This package lets you create PDFs using pdfmake and React.
 
 [![npm version](https://img.shields.io/npm/v/react-pdfmake-reconciler.svg?logo=npm)](https://www.npmjs.com/package/react-pdfmake-reconciler)
 
@@ -14,7 +14,7 @@ npm i react-pdfmake-reconciler
 
 ## Features
 
-- Write complex PDF in JSX. Render JSX into PDF Make content structure.
+- Write complex PDF in JSX. Render JSX into pdfmake content structure.
 - Utilize React features like:
   - Context. Note that outside React contexts do not penetrate into PDF renderer.
   - Components
@@ -22,7 +22,7 @@ npm i react-pdfmake-reconciler
 - Working React update loop, (although it is unlikely to trigger user events inside PDF.), e.g.
   - async setState calls
   - useEffect call
-- TypeScript typing for PDF Make Components (`<pdf-*>` components)
+- TypeScript typing for pdfmake Components (`<pdf-*>` components)
 - React Developer Tools support
 
 ![React Developer Tools Demo](./screenshots/react-devtools-demo.png)
@@ -73,7 +73,7 @@ const document = PdfRenderer.renderOnce(<pdf-text bold>Hello World!</pdf-text>);
 
 ### PDF elements
 
-Newly defined intrinsic elements by this package have the `pdf-` prefix. Roughly speaking, each type of PDF Make content object corresponds to one element type, where the property specifying the `Content` is mapped to the `children` prop. For example:
+Newly defined intrinsic elements by this package have the `pdf-` prefix. Roughly speaking, each type of pdfmake content object corresponds to one element type, where the property specifying the `Content` is mapped to the `children` prop. For example:
 
 ```tsx
 const pdfMakeContent = {
@@ -118,7 +118,7 @@ const pdfNode = (
 
 ### PdfPreview
 
-`<PdfPreview>` provides an easy way to render your React PDF Make Reconciler JSX in the browser. You can also debug your PDF JSX using the [React Developer Tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extension.
+`<PdfPreview>` provides an easy way to render your React pdfmake Reconciler JSX in the browser. You can also debug your PDF JSX using the [React Developer Tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extension.
 
 ```tsx
 import { FC, StrictMode } from "react";

@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "author": "Daniel Cheung",
-  "description": "Writing PDF Make with React JSX using React Reconciler.",
+  "description": "Writing pdfmake with React JSX using React Reconciler.",
   "keywords": [
     "react",
     "pdfmake",
