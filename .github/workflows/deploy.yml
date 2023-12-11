@@ -44,9 +44,12 @@ jobs:
         run: pnpm vitest run
       - name: Build
         run: pnpm run build
+      - name: Install docs dependencies
+        working-directory: docs
+        run: pnpm install
       - name: Build Docs
         working-directory: docs
-        run: pnpm install & pnpm run build
+        run: pnpm run build
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
