@@ -1,0 +1,24 @@
+---
+sidebar_position: 1
+sidebar_label: <PdfDocument>
+---
+
+import { PropTable } from "../../../src/components/PropsTable";
+
+# &lt;PdfDocument>
+
+## Props
+
+<PropTable name="PdfDocument" />
+
+## Example
+
+```tsx twoslash
+import { PdfDocument } from "react-pdfmake-reconciler";
+
+const doc = (
+  <PdfDocument pageOrientation="landscape" pageSize="A4">
+    <pdf-text>Hello world!</pdf-text>
+  </PdfDocument>
+);
+```

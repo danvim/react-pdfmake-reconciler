@@ -1,0 +1,34 @@
+---
+sidebar_position: 4
+sidebar_label: <PdfTable>
+---
+
+import { PropTable } from "../../../src/components/PropsTable";
+
+# &lt;PdfTable>
+
+A more user-friendly way to define tables than to use `<pdf-table>`.
+
+## Props
+
+<PropTable name="PdfTable" />
+
+## Example
+
+```tsx twoslash
+import { PdfTable } from "react-pdfmake-reconciler";
+
+const table = (
+  <PdfTable
+    rows={[
+      [<pdf-text>Header 1</pdf-text>, <pdf-text>Header 2</pdf-text>],
+      [
+        <pdf-cell border={[true, true, true, true]}>
+          <pdf-text>Cell 1</pdf-text>
+        </pdf-cell>,
+        <pdf-text>Cell 2</pdf-text>,
+      ],
+    ]}
+  />
+);
+```

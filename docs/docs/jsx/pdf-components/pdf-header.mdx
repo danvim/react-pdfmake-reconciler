@@ -1,0 +1,34 @@
+---
+sidebar_position: 2
+sidebar_label: <PdfHeader>
+---
+
+import { PropTable } from "../../../src/components/PropsTable";
+
+# &lt;PdfHeader>
+
+## Props
+
+<PropTable name="PdfHeader" />
+
+## Example
+
+```tsx twoslash
+import { PdfHeader } from "react-pdfmake-reconciler";
+
+const staticHeader = (
+  <PdfHeader>
+    <pdf-text>Hello world!</pdf-text>
+  </PdfHeader>
+);
+
+const dynamicHeader = (
+  <PdfHeader>
+    {(currentPage, pageCount, pageSize) => (
+      <pdf-text>
+        Page {currentPage} / {pageCount}
+      </pdf-text>
+    )}
+  </PdfHeader>
+);
+```

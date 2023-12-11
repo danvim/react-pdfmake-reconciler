@@ -1,0 +1,119 @@
+import { PdfPreview, PdfTable } from "react-pdfmake-reconciler";
+import { PropTable } from "../../../src/components/PropsTable";
+import { StrictMode } from "react";
+
+# PdfPreview
+
+Test out PDF JSX in your browser and inspect with React Development Tools. This component runs the full React update loop as mentioned in [PdfRenderer](../../renderer#render-to-react-loop). So it will react to the typical rerendering signals (state update, parent rerender, etc.).
+
+## Props
+
+<PropTable name="PdfPreview" />
+
+## Example
+
+```tsx twoslash
+import { FC, StrictMode } from "react";
+import { PdfPreview } from "react-pdfmake-reconciler";
+
+export const App: FC = () => (
+  <div>
+    <PdfPreview>
+      {/* Optional */}
+      <StrictMode>
+        {/* Only use components that resolves to pdf-* components from here on out. DOM elements won't work. */}
+        <pdf-text>Hello World!</pdf-text>
+      </StrictMode>
+    </PdfPreview>
+  </div>
+);
+```
+
+The PDF is then mounted onto your React app as an iframe. This only works well when you are debugging your PDF setup on a desktop browser. Try opening your React Development Tools, you should see the PDF section being mounted at the very bottom of the tree.
+
+You should see something like this:
+
+```
+PdfContext.Provider
+  └ Y ⬅️ The PdfTable component
+    ├ Fragment key="0-0"
+    ├ Fragment key="0-1"
+    ├ Fragment key="1-0"
+    └ Fragment key="1-1"
+```
+
+Try removing a row via the React Development Tools and see the PDF rerendering in action.
+
+<PdfPreview style={{ width: "100%", height: 500 }}>
+  <StrictMode>
+    <pdf-text>Hello world!</pdf-text>
+    <PdfTable
+      rows={[
+        [<pdf-text>Heading 1</pdf-text>, <pdf-text>Heading 2</pdf-text>],
+        [<pdf-text>Cell 1</pdf-text>, <pdf-text>Cell 2</pdf-text>],
+      ]}
+    />
+  </StrictMode>
+</PdfPreview>
+
+## Regarding React Context
+
+React Context does not penetrate through `<PdfPreview>`. If you need to pass in values within your Context, consider reapplying the Context inside.
+
+```tsx twoslash {8-11, 27-30}
+// @filename: App.tsx
+import React, { FC } from "react";
+import { MyContext } from "./MyContext";
+import { PreviewWrapper } from "./PreviewWrapper";
+
+export const App: FC = () => (
+  <div>
+    {/* Normal app Context */}
+    <MyContext.Provider value={{ bestSnack: "chips" }}>
+      <PreviewWrapper />
+    </MyContext.Provider>
+  </div>
+);
+
+// @filename: PreviewWrapper.tsx
+import React, { FC, StrictMode, useContext } from "react";
+import { PdfPreview } from "react-pdfmake-reconciler";
+import { MyContext } from "./MyContext";
+import { PdfSnack } from "./PdfSnack";
+
+export const PreviewWrapper: FC = () => {
+  const myContext = useContext(MyContext);
+
+  return (
+    <PdfPreview>
+      <StrictMode>
+        {/* Forward needed Context for PDF rendering */}
+        <MyContext.Provider value={myContext}>
+          <PdfSnack />
+        </MyContext.Provider>
+      </StrictMode>
+    </PdfPreview>
+  );
+};
+
+// @filename: PdfSnack.tsx
+import React, { FC, useContext } from "react";
+import { MyContext } from "./MyContext";
+
+export const PdfSnack: FC = () => {
+  const { bestSnack } = useContext(MyContext);
+
+  return <pdf-text>{bestSnack}</pdf-text>;
+};
+
+// @filename: MyContext.tsx
+import { createContext, useContext } from "react";
+
+interface MyContextType {
+  bestSnack: string | null;
+}
+
+export const MyContext = createContext<MyContextType>({
+  bestSnack: null,
+});
+```

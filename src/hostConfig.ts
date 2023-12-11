@@ -1,6 +1,6 @@
 import { HostConfig } from "react-reconciler";
 import { Content } from "pdfmake/interfaces";
-import { DefaultEventPriority } from "react-reconciler/constants";
+import { DefaultEventPriority } from "react-reconciler/constants.js";
 import {
   PdfReconcilerElement,
   PdfReconcilerIntrinsicType,
@@ -89,13 +89,20 @@ export const hostConfig: HostConfig<
 
     const contentKey = getContentKey(type);
 
+    const newChildren = keepChildren
+      ? (children as PdfReconcilerNode)
+      : undefined;
+
     if (contentKey === null) {
-      throw new Error("Unexpected branch");
+      if (type === "pdf-array" && Array.isArray(children)) {
+        return newChildren ?? [];
+      }
+      throw new Error("Unexpected branch during cloneInstance");
     }
 
     const newInstance: PdfReconcilerElement = {
       $__reactPdfMakeType: type,
-      [contentKey]: keepChildren ? children : [],
+      [contentKey]: newChildren,
       ...restNewProps,
     };
 
