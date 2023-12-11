@@ -43,6 +43,9 @@ devDependencies:
   '@types/pdfmake':
     specifier: ^0.2.8
     version: 0.2.8
+  '@types/react':
+    specifier: ^18.2.43
+    version: 18.2.43
   docusaurus-plugin-react-docgen-typescript:
     specifier: ^1.1.0
     version: 1.1.0(react-docgen-typescript@2.2.2)(react@18.2.0)

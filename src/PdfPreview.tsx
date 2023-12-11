@@ -5,7 +5,7 @@ import {
   TFontDictionary,
 } from "pdfmake/interfaces";
 import { PdfNode } from "./types/PdfNode.ts";
-import pdfMake from "pdfmake/build/pdfmake";
+import pdfMake from "pdfmake/build/pdfmake.js";
 import { PdfRenderer } from "./PdfRenderer.tsx";
 
 const defaultFonts: TFontDictionary = {

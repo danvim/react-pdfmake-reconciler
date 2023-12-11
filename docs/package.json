@@ -29,6 +29,7 @@
     "@docusaurus/types": "3.0.1",
     "@types/pdfkit": "^0.13.3",
     "@types/pdfmake": "^0.2.8",
+    "@types/react": "^18.2.43",
     "docusaurus-plugin-react-docgen-typescript": "^1.1.0",
     "docusaurus-plugin-sass": "^0.2.5",
     "docusaurus-preset-shiki-twoslash": "^1.1.41",
