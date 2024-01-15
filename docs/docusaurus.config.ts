@@ -3,6 +3,7 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import remarkTwoslash from "remark-shiki-twoslash";
 import remarkHtmlToJsx from "./remark-plugins/remarkHtmlToJsx";
+import { Options } from "docusaurus-plugin-react-docgen-typescript";
 
 const config: Config = {
   title: "React pdfmake Reconciler",
@@ -75,7 +76,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/social-card.jpg",
+    image: "img/social-card.png",
     navbar: {
       title: "React pdfmake Reconciler",
       logo: {
@@ -129,18 +130,18 @@ const config: Config = {
   plugins: [
     [
       "docusaurus-plugin-react-docgen-typescript",
-      /** @type {import('docusaurus-plugin-react-docgen-typescript').Options} */
       {
         // pass in a single string or an array of strings
+        global: false,
+        globOptions: null,
         src: ["../src/**/*.tsx"],
         parserOptions: {
-          propFilter: {
-            skipChildrenPropWithoutDoc: false,
-          },
+          skipChildrenPropWithoutDoc: false,
         },
-      },
+      } satisfies Options,
     ],
     "docusaurus-plugin-sass",
+    "docusaurus-lunr-search",
   ],
 };
 

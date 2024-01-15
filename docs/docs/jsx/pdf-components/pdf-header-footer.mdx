@@ -1,0 +1,45 @@
+---
+sidebar_position: 2
+---
+
+import { PropTable } from "../../../src/components/PropsTable";
+
+# PdfHeader & PdfFooter
+
+Implemented using React Portals, you can define static/dynamic header and footer using `<PdfHeader>` and `<PdfFooter>`.
+
+## PdfHeader Props
+
+<PropTable name="PdfHeader" />
+
+## PdfFooter Props
+
+<PropTable name="PdfFooter" />
+
+## Example
+
+```tsx twoslash
+import { PdfHeader, PdfFooter } from "react-pdfmake-reconciler";
+
+const staticHeader = (
+  <PdfHeader>
+    <pdf-text>Hello world!</pdf-text>
+  </PdfHeader>
+);
+
+const dynamicFooter = (
+  <PdfFooter>
+    {(currentPage, pageCount, pageSize) => (
+      <pdf-text>
+        Page {currentPage} / {pageCount}
+      </pdf-text>
+    )}
+  </PdfFooter>
+);
+```
+
+## Regarding React Context
+
+The way how dynamic content is that the renderer statically renders the function separately, so Context doesn't
+penetrate into dynamic content, just like [PdfRenderer](../util-components/pdf-preview.mdx#regarding-react-context).
+See also for workaround.

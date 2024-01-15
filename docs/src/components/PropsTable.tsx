@@ -25,7 +25,9 @@ export const PropTable: FC<{ name: string }> = ({ name }) => {
 
   return (
     <>
-      <p>This type also extends: {Array.from(libTypes).join(", ")}</p>
+      {libTypes.size > 0 && (
+        <p>This type also extends: {Array.from(libTypes).join(", ")}</p>
+      )}
       <table>
         <thead>
           <tr>
