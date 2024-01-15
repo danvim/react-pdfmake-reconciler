@@ -126,6 +126,9 @@ const config: Config = {
       theme: prismThemes.vsLight,
       darkTheme: prismThemes.vsDark,
     },
+    colorMode: {
+      defaultMode: "dark",
+    },
   } satisfies Preset.ThemeConfig,
   plugins: [
     [
