@@ -1,0 +1,82 @@
+---
+sidebar_position: 4
+---
+
+# Styled
+
+This package provides the `styled()` function. You can call it using a `pdf-*` tag name or your own component that passes through the `style` prop onto a `pdf-*` element.
+
+One good use of this API is to provide themeable components using `ThemeContext`.
+
+## Basic usage
+
+```tsx twoslash
+/// <reference types="react-pdfmake-reconciler/react-jsx" />
+
+import { FC, ReactNode } from "react";
+import { styled } from "react-pdfmake-reconciler";
+import { StyleReference } from "pdfmake/interfaces";
+
+const Text = styled("pdf-text")({
+  color: "#f00",
+});
+
+// Define additional props for styling.
+// isSuccess can leak into pdfmake output structure here
+const StatusText = styled(Text)<{ isSuccess: boolean }>((props) => ({
+  color: props.isSuccess ? "#0f0" : "#f00",
+}));
+// Set display name for styled components to find them easily in React Dev Tools
+StatusText.displayName = "StatusText";
+
+// When the underlying component controls what props goes into the vDOM,
+// it can prevent styled props from polluting the output.
+const SafeText: FC<{ style?: StyleReference; children?: ReactNode }> = ({
+  style,
+  children,
+}) => <pdf-text style={style}>{children}</pdf-text>;
+const StyledSafeText = styled(SafeText)<{ isSuccess: boolean }>((props) => ({
+  color: props.isSuccess ? "#0f0" : "#f00",
+}));
+
+const pdfNode = (
+  <>
+    <Text>Hello</Text>
+    <StatusText isSuccess>World!</StatusText>
+    <StyledSafeText isSuccess>World!</StyledSafeText>
+  </>
+);
+```
+
+## Theming
+
+Override `DefaultTheme` from the package to provide your own theme structure and access it in the styled function.
+
+```tsx twoslash
+/// <reference types="react-pdfmake-reconciler/react-jsx" />
+
+import { FC, ReactNode } from "react";
+import { styled, ThemeProvider } from "react-pdfmake-reconciler";
+import { StyleReference } from "pdfmake/interfaces";
+
+declare module "react-pdfmake-reconciler" {
+  interface DefaultTheme {
+    /** My primary color */
+    primaryColor: string;
+  }
+}
+
+const Text = styled("pdf-text")((props, theme) => ({
+  color: theme.primaryColor,
+}));
+
+const pdfNode = (
+  <ThemeProvider
+    value={{
+      primaryColor: "#f00",
+    }}
+  >
+    <Text>Hello</Text>
+  </ThemeProvider>
+);
+```

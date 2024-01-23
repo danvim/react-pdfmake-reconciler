@@ -11,6 +11,7 @@ import { PdfPreview } from "../PdfPreview.tsx";
 import { PdfNode } from "../types/PdfNode.ts";
 import { PdfDocument, PdfFooter, PdfHeader, PdfTable } from "../components";
 import { Heading } from "./components/Heading.tsx";
+import { styled } from "../styled";
 
 const Bold: FC<{ children?: PdfNode }> = ({ children }) => {
   return <pdf-text bold={true}>{children}</pdf-text>;
@@ -69,7 +70,7 @@ function App() {
 
       <div>
         {shown && (
-          <PdfPreview>
+          <PdfPreview style={{ width: 1000, height: 500 }}>
             <StrictMode>
               <PdfDocument
                 pageOrientation="landscape"
@@ -119,6 +120,8 @@ function App() {
                     [<pdf-text>Hello</pdf-text>, <pdf-text>Hello</pdf-text>],
                   ]}
                 />
+                <StyledText>Text via Styled API</StyledText>
+                <StyledText2>Another text via Styled API</StyledText2>
               </PdfDocument>
               <PdfFooter>
                 {(pageNumber, pageCount) => (
@@ -150,5 +153,15 @@ function App() {
     </>
   );
 }
+
+const StyledText = styled("pdf-text")({
+  color: "#f00",
+});
+StyledText.displayName = "StyledText";
+
+const StyledText2 = styled(StyledText)({
+  color: "#0f0",
+});
+StyledText2.displayName = "StyledText2";
 
 export default App;

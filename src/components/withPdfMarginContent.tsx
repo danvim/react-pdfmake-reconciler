@@ -12,6 +12,7 @@ import { Container } from "../types/Container.ts";
 import { ReactPdfMake } from "../ReactPdfMake.ts";
 
 export interface PdfMarginContentProps {
+  /** Either static or dynamic content. */
   children: PdfNode | DynamicPdfNode;
 }
 
@@ -36,6 +37,7 @@ export const withPdfMarginContent = (
       if (typeof children === "function") {
         updateDocumentDefinitions({
           [documentContentKey]: (...args: Parameters<DynamicContent>) =>
+            // TODO would Context work if we somehow clone the root container and update this portal and get the result of the portal synchronously instead?
             PdfRenderer.renderOnce(
               typeof children === "function" ? children(...args) : children,
             ).content,

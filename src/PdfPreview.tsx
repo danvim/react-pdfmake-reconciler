@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, HTMLAttributes, useEffect, useMemo, useState } from "react";
 import {
   BufferOptions,
   TDocumentDefinitions,
@@ -20,7 +20,8 @@ const defaultFonts: TFontDictionary = {
   },
 };
 
-export interface PdfPreviewProps {
+export interface PdfPreviewProps extends HTMLAttributes<HTMLIFrameElement> {
+  /** Nodes that result to pdf-* intrinsic elements. */
   children?: PdfNode;
   tableLayouts?: BufferOptions["tableLayouts"];
   fonts?: TFontDictionary;
@@ -30,20 +31,16 @@ export const PdfPreview: FC<PdfPreviewProps> = ({
   children,
   tableLayouts,
   fonts,
+  ...props
 }) => {
   const document = useRenderDocument(children as PdfNode);
   const pdfObjectUrl = usePdfObjectLink(document, tableLayouts, fonts);
 
   return (
-    <div>
-      <div>
-        {pdfObjectUrl !== null ? (
-          <iframe style={{ width: 1000, height: 500 }} src={pdfObjectUrl} />
-        ) : (
-          <>Loading...</>
-        )}
-      </div>
-    </div>
+    <iframe
+      src={pdfObjectUrl !== null ? pdfObjectUrl : "data/html,<p>Loading...</p>"}
+      {...props}
+    />
   );
 };
 
@@ -57,16 +54,12 @@ const usePdfObjectLink = (
   const generatePdf = useMemo(
     () =>
       debounce((document: TDocumentDefinitions) => {
-        const blobPromise = new Promise<Blob>((resolve) => {
-          pdfMake
-            .createPdf(document, tableLayouts, fonts ?? defaultFonts)
-            .getBlob(resolve);
-        });
-
-        blobPromise.then((blob) => {
-          // console.log("New PDF rendered");
-          setLink(URL.createObjectURL(blob));
-        });
+        pdfMake
+          .createPdf(document, tableLayouts, fonts ?? defaultFonts)
+          .getBlob((blob) => {
+            // console.log("New PDF rendered");
+            setLink(URL.createObjectURL(blob));
+          });
       }, 50),
     [tableLayouts, fonts],
   );
