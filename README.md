@@ -24,6 +24,7 @@ npm i react-pdfmake-reconciler
   - useEffect call
 - TypeScript typing for pdfmake Components (`<pdf-*>` components)
 - React Developer Tools support
+- Styled API
 
 ![React Developer Tools Demo](./screenshots/react-devtools-demo.png)
 
