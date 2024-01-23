@@ -4,6 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 import remarkTwoslash from "remark-shiki-twoslash";
 import remarkHtmlToJsx from "./remark-plugins/remarkHtmlToJsx";
 import { Options } from "docusaurus-plugin-react-docgen-typescript";
+import path from "path";
 
 const config: Config = {
   title: "React pdfmake Reconciler",
@@ -145,6 +146,21 @@ const config: Config = {
     ],
     "docusaurus-plugin-sass",
     "docusaurus-lunr-search",
+    // Fixes GH Actions:
+    //  Docusaurus server-side rendering could not render static page with path ... because of error: Cannot read properties of null (reading 'useState')
+    () => ({
+      name: "resolve-react",
+      configureWebpack() {
+        return {
+          resolve: {
+            alias: {
+              // assuming root node_modules is up from "./packages/<your-docusaurus>
+              react: path.resolve("../node_modules/react"),
+            },
+          },
+        };
+      },
+    }),
   ],
 };
 
